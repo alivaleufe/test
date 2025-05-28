@@ -2,38 +2,70 @@
 
 use App\adms\Helpers\CSRFHelper;
 
-// Exibe o título da página para edição da senha do usuário
-echo "<h3>Editar Senha do Usuário</h3>";
-
-// Exibe links para listar usuários e visualizar o usuário específico
-echo "<a href='{$_ENV['URL_ADM']}list-users'>Listar</a><br>";
-echo "<a href='{$_ENV['URL_ADM']}view-user/" . ($this->data['form']['id'] ?? '') . "'>Visualizar</a><br><br>";
-
-// Inclui o arquivo que exibe mensagens de sucesso e erro
-include './app/adms/Views/partials/alerts.php';
-
 ?>
 
-<!-- Formulário para editar a senha do usuário -->
-<form action="" method="POST">
-    <!-- Campo oculto para o token CSRF para proteger o formulário contra ataques de falsificação de solicitação entre sites -->
-    <input type="hidden" name="csrf_token" value="<?php echo CSRFHelper::generateCSRFToken('form_update_password_user'); ?>">
+<div class="container-fluid px-4">
 
-    <!-- Campo oculto para o ID do usuário que está editando a senha -->
-    <input type="hidden" name="id" id="id" value="<?php echo $this->data['form']['id'] ?? ''; ?>">
+    <div class="mb-1 d-flex flex-column flex-sm-row gap-2">
+        <h2 class="mt-3">Usuários</h2>
 
-    <!-- Campo oculto para o e-mail -->
-    <input type="hidden" name="email" id="email" value="<?php echo $this->data['form']['email'] ?? ''; ?>">
+        <ol class="breadcrumb mb-3 mt-0 mt-sm-3 ms-auto">
+            <li class="breadcrumb-item">
+                <a href="<?php echo $_ENV['URL_ADM']; ?>dashboard" class="text-decoration-none">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="<?php echo $_ENV['URL_ADM']; ?>list-users" class="text-decoration-none">Usuários</a>
+            </li>
+            <li class="breadcrumb-item">Editar Senha</li>
 
-    <!-- Campo para a nova senha do usuário -->
-    <label for="password">Senha: </label>
-    <input type="password" name="password" id="password" placeholder="Senha com mínimo 6 caracteres" value="<?php echo $this->data['form']['password'] ?? ''; ?>"><br><br>
+        </ol>
 
-    <!-- Campo para confirmar a nova senha -->
-    <label for="confirm_password">Confirmar a Senha: </label>
-    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmar a senha" value="<?php echo $this->data['form']['confirm_password'] ?? ''; ?>"><br><br>
+    </div>
 
-    <!-- Botão para submeter o formulário e salvar a nova senha -->
-    <button type="submit">Salvar</button>
+    <div class="card mb-4 border-light shadow">
 
-</form>
+        <div class="card-header hstack gap-2">
+
+            <span>Editar</span>
+
+            <span class="ms-auto d-sm-flex flex-row">
+                <a href="<?php echo $_ENV['URL_ADM']; ?>list-users" class="btn btn-info btn-sm me-1 mb-1"><i class="fa-solid fa-list"></i> Listar</a>
+
+                <a href="<?php echo $_ENV['URL_ADM'] . 'view-user/' . ($this->data['form']['id'] ?? ''); ?>" class="btn btn-primary btn-sm me-1 mb-1"><i class="fa-regular fa-eye"></i> Visualizar</a>
+
+            </span>
+
+        </div>
+
+        <div class="card-body">
+
+            <?php include './app/adms/Views/partials/alerts.php'; ?>
+
+            <form action="" method="POST" class="row g-3">
+
+                <input type="hidden" name="csrf_token" value="<?php echo CSRFHelper::generateCSRFToken('form_update_password_user'); ?>">
+
+                <input type="hidden" name="id" id="id" value="<?php echo $this->data['form']['id'] ?? ''; ?>">
+
+                <input type="hidden" name="email" id="email" value="<?php echo $this->data['form']['email'] ?? ''; ?>">
+
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Senha com mínimo 6 caracteres" value="<?php echo $this->data['form']['password'] ?? ''; ?>">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="confirm_password" class="form-label">Confirmar a Senha</label>
+                    <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirmar a senha" value="<?php echo $this->data['form']['confirm_password'] ?? ''; ?>">
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-warning btn-sm">Salvar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

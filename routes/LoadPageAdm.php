@@ -37,12 +37,21 @@ class LoadPageAdm
     /** 
      * @var array $listPgPrivate Recebe a lista de páginas privadas 
      */
-    private array $listPgPrivate = ["Dashboard", "ListUsers", "ViewUser", "CreateUser", "UpdateUser", "DeleteUser", "UpdatePasswordUser", "Logout"];
+    
+    private array $listPgPrivate = [
+    "Dashboard", "ListUsers", "ViewUser", "CreateUser", "UpdateUser", "DeleteUser", "UpdatePasswordUser",
+    "Logout",
+    "ListTransports", // Novo
+    "CreateTransport", // Novo - para o futuro controller de criação
+    "ViewTransport",   // Novo - para o futuro controller de visualização
+    "UpdateTransport", // Novo - para o futuro controller de atualização
+    "DeleteTransport"  // Novo - para o futuro controller de exclusão
+];
 
     /** 
      * @var array $listDirectory Recebe a lista de diretórios com as controllers 
      */
-    private array $listDirectory = ["login", "dashboard", "users", "errors"];
+    private array $listDirectory = ["login", "dashboard", "users","transports", "errors"];
 
     /** 
      * @var array $listPackages Recebe a lista de pacotes de controllers 

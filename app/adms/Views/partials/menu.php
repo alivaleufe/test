@@ -13,6 +13,11 @@
                     Universitários
                 </a>
 
+                <a class="nav-link <?php echo (($this->data['menu'] ?? false) and ($this->data['menu'] == 'list-transports')) ? 'active' : '' ?>" href="<?php echo $_ENV['URL_ADM']; ?>list-transports">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-bus"></i></div>
+                    Transportes
+                </a>
+
                 <a class="nav-link" href="<?php echo $_ENV['URL_ADM']; ?>logout">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                     Sair

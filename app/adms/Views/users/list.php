@@ -15,18 +15,17 @@ $csrf_token = CSRFHelper::generateCSRFToken('form_delete_user');
         <ol class="breadcrumb mb-3 mt-3 ms-auto">
             <li class="breadcrumb-item">
                 <a href="<?php echo $_ENV['URL_ADM']; ?>dashboard" class="text-decoration-none">Dashboard</a>
-            <li class="breadcrumb-item">Universitários</li>
             </li>
+            <li class="breadcrumb-item">Universitários</li>
+
         </ol>
-
-
 
     </div>
 
     <div class="card mb-4 border-light shadow">
 
         <div class="card-header hstack gap-2">
-            <span>Gerenciar universitários</span>
+            <span>Listar</span>
 
             <span class="ms-auto">
                 <a href="<?php echo $_ENV['URL_ADM']; ?>create-user" class="btn btn-success btn-sm"><i class="fa-regular fa-square-plus"></i> Cadastrar</a>
@@ -70,17 +69,13 @@ $csrf_token = CSRFHelper::generateCSRFToken('form_delete_user');
 
                                     <a href='<?php echo "{$_ENV['URL_ADM']}update-user/$id"; ?>' class="btn btn-warning btn-sm me-1 mb-1"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
 
-                                    <!-- Formulário para deletar usuário -->
-                                    <form action="delete-user" method="POST">
+                                    <form id="formDelete<?php echo $id; ?>" action="<?php echo $_ENV['URL_ADM']; ?>delete-user" method="POST">
 
-                                        <!-- Campo oculto para o token CSRF -->
                                         <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
-                                        <!-- Campo oculto para o ID do usuário -->
                                         <input type="hidden" name="id" id="id" value="<?php echo $id ?? ''; ?>">
 
-                                        <!-- Botão para submeter o formulário -->
-                                        <button type="submit" class="btn btn-danger btn-sm me-1 mb-1" onclick="return confirm('Tem certeza que deseja apagar este registro?')"><i class="fa-regular fa-trash-can"></i> Apagar</button>
+                                        <button type="submit" class="btn btn-danger btn-sm me-1 mb-1" onclick="confirmDeletion(event, <?php echo $id; ?>)"><i class="fa-regular fa-trash-can"></i> Apagar</button>
 
                                     </form>
 

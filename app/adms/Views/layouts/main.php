@@ -59,7 +59,11 @@
 
     <script src="<?php echo $_ENV['URL_ADM'] ?>public/adms/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="<?php echo $_ENV['URL_ADM'] ?>public/adms/js/sbadmin.js"></script>
+
+    <script src="<?php echo $_ENV['URL_ADM'] ?>public/adms/js/script_admin.js"></script>
 
 </body>
 

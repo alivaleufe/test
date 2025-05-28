@@ -1,68 +1,65 @@
 <?php
 
+// O error_log DEVE VIR DEPOIS da declaração de namespace ou declare.
+// Para fins de depuração SE o arquivo está sendo incluído, coloque o log APÓS o namespace,
+// ou use outros métodos de depuração se precisar antes do namespace.
+// Por enquanto, vamos remover o log que estava antes do namespace.
+
+declare(strict_types=1); // Se você usar strict_types, ele vem primeiro.
+
 namespace App\adms\Controllers\Services\Validation;
 
-use App\adms\Helpers\GenerateLog;
-use App\adms\Models\Repository\UniqueValueRepository;
-use Exception;
-use Rakit\Validation\Rule;
+// Agora os logs e o resto do código
+// error_log("DEBUG: UniqueRule.php file was included/parsed at " . date("Y-m-d H:i:s")); // Movido ou removido
 
-/**
- * Classe UniqueRule
- * 
- * Esta classe define uma regra de validação personalizada para verificar a unicidade de um valro em uma tablea do banco de dados.
- * Ela estende a classe 'Rule' do pacote 'Rakit/Validation'. 
- * 
- * @package App/adms/Controllers/Services/Validation
- */
+use App\adms\Models\Repository\UniqueValueRepository;
+use Rakit\Validation\Rule;
+use App\adms\Helpers\GenerateLog;
+use Exception;
 
 class UniqueRule extends Rule
 {
-
-    // Mensagem de erro genérica
-    protected $message = ":value já está em uso";
-
-    // Parâmetros dinâmicos
-    protected $fillableParams = ['table', 'column', 'except'];
-
-    /**
-     * Verifica se o valor fornecido é único em uma coluna específica de uma tabela.
-     * 
-     * @param mixed $value O valor a ser validado.
-     * 
-     * @return bool Retorna true se o valor for único ou igual ao valor de exceção; caso contrário, false.
-     * 
-     * @throws Exception Caso ocorra um erro ao verificar a unicidade do valor, uma exceção será lançada e registrada no log.
-     */
+    protected $message = "O :attribute :value já está cadastrado.";
+    protected $fillableParams = ['table', 'column', 'except', 'idColumn'];
 
     public function check($value): bool
     {
-
-        // Usar try e catch para gerenciar exceção/erro
-        try { // Permanece no try se não houver nenhum erro
-
-            // Verificar se os parâmetros necessários existem
+        // Log de entrada no método (este está no lugar correto)
+        error_log("DEBUG: UniqueRule::check() ENTERED for value: " . $value . " at " . date("Y-m-d H:i:s"));
+        try {
             $this->requireParameters(['table', 'column']);
-
-            // Recuperar os parâmetros
             $table = $this->parameter('table');
             $column = $this->parameter('column');
-            $except = $this->parameter('except');
+            
+            $exceptValue = $this->parameter('except');
+            $idColumnName = $this->parameter('idColumn');
 
-            if ($except and $except == $value) {
-                return true;
+            if ($idColumnName === null) {
+                $idColumnName = 'id'; // Padrão para 'id' se não especificado
+            }
+            if (is_string($exceptValue) && strtoupper($exceptValue) === 'NULL') {
+                $exceptValue = null; // Converte a string "NULL" para o valor null real
             }
 
-            // Instanciar o Repository para verificar se existe registro valor fornecido
+            error_log("DEBUG: UniqueRule params: table={$table}, column={$column}, exceptValue=" . print_r($exceptValue, true) . " (Type: " . gettype($exceptValue) . "), idColumnName={$idColumnName}");
+
             $validateUniqueValue = new UniqueValueRepository();
-            return $validateUniqueValue->getRecord($table, $column, $value);
-        } catch (Exception $e) { // Acessa o catch quando houver erro no try
-
-            // Chamar o método para salvar o log
-            GenerateLog::generateLog("error", "Usuário não cadastrado.", ['error' => $e->getMessage()]);
-
-            return false;
+            $result = $validateUniqueValue->getRecord($table, $column, $value, $exceptValue, $idColumnName);
             
+            error_log("DEBUG: Result from getRecord in UniqueRule: " . ($result ? 'true (is unique)' : 'false (not unique)'));
+            error_log("DEBUG: UniqueRule::check() END");
+            return $result;
+
+        } catch (Exception $e) {
+            error_log("EXCEPTION in UniqueRule: " . $e->getMessage() . " for value: " . $value);
+            GenerateLog::generateLog("error", "Erro ao verificar valor único na UniqueRule.", [
+                'error' => $e->getMessage(),
+                'value' => $value,
+                'table' => $this->parameter('table'), // Melhor usar a variável $table se já definida
+                'column' => $this->parameter('column'), // Melhor usar a variável $column se já definida
+                'params_passed' => $this->getParameters() 
+            ]);
+            return false;
         }
     }
 }
